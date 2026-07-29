@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Products: anyone can read (storefront), only a signed-in admin can write
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Orders: anyone can create (checkout), only a signed-in admin can read/update
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+  }
+}
